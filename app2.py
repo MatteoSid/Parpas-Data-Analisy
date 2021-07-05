@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
-import dash_html_components as html
-import dash_core_components as dcc
-import plotly.express as px
-import pandas as pd
+from _plotly_utils.basevalidators import AnyValidator
 import dash
-import csv
-import os
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
+import plotly.express as px
+import os, csv
+
+import pandas as pd
 
 def txt_to_csv(filename, filedest):
 
@@ -80,57 +79,83 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-colors = {
-    'background': '#1b1f34',
-    'text':       '#7FDBFF'
-}
 
-tf = '1H'
-data_file = 'TabLogPostTHS'
-#data_file = 'TabLogAntTHS'
-df = create_df(data_file, timeframe=tf)
-#df = df.loc['2020-03-18 7:25:00':'2020-03-21 9:35:00']
+available_tab = ['TabLogPostTHS', 'TabLogAntTHS', 'DiagnosisTabl', 'DiagnosisTable', 'TabLogFMS_DX', 'TabLogFMS_SX']
+available_tf = ['10T', '30T', '1H', '12H', '1D']
 
-fig = px.line(df, width=1600, height=700)
+'''
+app.layout = html.Div([
+    html.H6("Change the value in the text box to see callbacks in action!"),
+    html.Div(["Input: ",
+                dcc.Input(id='my-input', value='initial value', type='text')]),
+    html.Br(),
+    html.Div(id='my-output'),
 
-# fig.update_layout(
-#     plot_bgcolor=   colors['background'],
-#     paper_bgcolor=  colors['background'],
-#     font_color=     colors['text']
-# )
+])
+'''
 
-#app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
-app.layout = html.Div(children=[
+app.layout = html.Div([
+    html.Div([
 
-    html.H1(
-        children=data_file,
+        html.H1(
+        children='Storico temperature',
         style={
             'textAlign': 'center'
             #'color': colors['text']
         }),
 
-    html.Div(
-        children='Grafico delle temperature della tabella ' + data_file + ' con timeframe ' + tf,
-        style={
-            'textAlign': 'center'
-            #'color': colors['text']
-        }),
-
-    html.Label('Selettore tabella'),
-    dcc.Dropdown(
-        options=[
-            {'label': 'TabLogPostTHS', 'value': 'TabLogPostTHS'},
-            {'label': 'TabLogAntTHS', 'value': 'TabLogAntTHS'}
+        html.Div(['Tabella:',
+            dcc.Dropdown(
+                id='tab_name',
+                options=[{'label': i, 'value': i} for i in available_tab],
+                value='TabLogPostTHS'
+            )
         ],
-        value = 'TabLogPostTHS'
-    ),
-    
+        style={'width': '48%', 'display': 'inline-block'}),
 
-    dcc.Graph(
-        id='example-graph',
-        figure=fig
-    )
+        html.Div(['Timeframe:',
+            dcc.Dropdown(
+                id='tf_value',
+                options=[
+                    {'label': '30 minuti', 'value': '30T'},
+                    {'label': '1 ora', 'value': '1H'},
+                    {'label': '12 ore', 'value': '12H'},
+                    {'label': '1 giorno', 'value': '1D'}
+                ],
+                value='1H'
+            )
+        ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+    ]),
+
+    dcc.Graph(id='indicator-graphic')
+
 ])
 
+@app.callback(
+    Output('indicator-graphic', 'figure'),
+    Input('tab_name', 'value'),
+    Input('tf_value', 'value'))
+def update_graph(tab_name, tf_value):
+
+    df2 = create_df(tab_name, timeframe=tf_value)
+    fig = px.line(df2, height=700) #, width=1600, height=700)
+    # fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
+
+    fig.update_layout(
+        #title="Plot Title",
+        xaxis_title="Time",
+        yaxis_title="Temperature",
+        legend_title="Sonde",
+        font=dict(
+            #family="Courier New, monospace",
+            size=16,
+            color='black'
+            #color="RebeccaPurple"
+        )
+    )
+
+    return fig
+
+
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8051)
