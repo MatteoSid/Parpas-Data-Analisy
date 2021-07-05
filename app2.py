@@ -79,7 +79,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-
 available_tab = ['TabLogPostTHS', 'TabLogAntTHS', 'DiagnosisTabl', 'DiagnosisTable', 'TabLogFMS_DX', 'TabLogFMS_SX']
 available_tf = ['10T', '30T', '1H', '12H', '1D']
 
