@@ -119,8 +119,7 @@ app.layout = html.Div([
                     {'label': '30 minuti', 'value': '30T'},
                     {'label': '1 ora', 'value': '1H'},
                     {'label': '12 ore', 'value': '12H'},
-                    {'label': '1 giorno', 'value': '1D'}
-                ],
+                    {'label': '1 giorno', 'value': '1D'}],
                 value='1H'
             )
         ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})

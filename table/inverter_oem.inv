@@ -1,0 +1,3 @@
+BEGIN INVERTER_OEM.INV MM
+NR   NAME                            PWM     S       I-MAX    I-N      U-IMAX  I-N-DC   T-DC    F-DC    T-AC    F-AC    T-IGBT  R-SENSOR  F-Limit  D-I-MEAS  T-MIN-us  
+[END]

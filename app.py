@@ -8,6 +8,7 @@ import pandas as pd
 import dash
 import csv
 import os
+from data_func import *
 
 def txt_to_csv(filename, filedest):
 
