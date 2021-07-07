@@ -1,17 +1,12 @@
-from _plotly_utils.basevalidators import AnyValidator
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 from dash.dependencies import Input, Output
+import dash_html_components as html
+import dash_core_components as dcc
 import plotly.express as px
-import os, csv
 from data_func import *
 import pandas as pd
-from tqdm import tqdm
+import os, csv
 import shutil
-import os
-
-
+import dash
 
 # controllo se la cartella 'csv' è presente. Se c'è la elimino e la ricreo, se non c'è la creo.
 if os.path.isdir('table/csv'):
@@ -26,8 +21,8 @@ for filename in os.listdir('table/'):
     if filename.endswith(".txt"):
         #t.set_description("Bar desc (file %i)" % i)
         #print(filename[:-4])
-        txt_to_csv(filename = 'table/' + filename[:-4],
-                   filedest = 'table/csv/' + filename[:-4])
+        txt_to_csv( filename = 'table/' + filename[:-4],
+                    filedest = 'table/csv/' + filename[:-4])
         
         # creo una lista con i nomi delle tabelle da unire
         if not filename[-5:-4].isdigit():
@@ -42,11 +37,9 @@ for filename in os.listdir('table/csv'):
     if not filename.endswith('_all.csv'):
         os.remove('table/csv/'+filename)
 
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
 
 app.layout = html.Div([
     html.Div([
