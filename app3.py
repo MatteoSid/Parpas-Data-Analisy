@@ -37,6 +37,12 @@ for filename in os.listdir('table/csv'):
     if not filename.endswith('_all.csv'):
         os.remove('table/csv/'+filename)
 
+dataDict={}
+for filename in os.listdir('table/csv'):
+    print(filename)
+    df = pd.read_csv ('table/csv/'+filename, index_col='DataTime')
+    dataDict[filename[:-4]] = df
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -86,7 +92,7 @@ app.layout = html.Div([
     Input('tf_value', 'value'))
 def update_graph(tab_name, tf_value):
     
-    df = pd.read_csv ('table/csv/' + tab_name + '_all.csv', index_col='DataTime')
+    df = dataDict[tab_name + '_all']
     df.index = pd.to_datetime(df.index)
     df = df.resample(tf_value).mean()
     fig = px.line(df, height=800) #, width=1600, height=700)
@@ -105,7 +111,6 @@ def update_graph(tab_name, tf_value):
         )
     )
     return fig
-
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8051)
