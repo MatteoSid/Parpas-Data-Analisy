@@ -77,3 +77,93 @@ def create_single_csv(path_folder, tab_name):
     data_all = pd.concat(data_list)
     data_all.sort_index(inplace = True)
     data_all.to_csv(path_folder + '/csv/' + tab_name + '_all.csv')
+
+def CARICA_TABELLE_BRUTTO():
+    #--- carico tutti i file TabLogFMS_DX
+    dflist=[]
+    for file in os.listdir('table/csv'):
+        if 'TabLogFMS' in file and '_DX' in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/TabLogFMS_DX_all.csv')    
+
+    #--- carico tutti i file TabLogFMS_SX
+    dflist=[]
+    for file in os.listdir('table/csv'):
+        if 'TabLogFMS' in file and '_SX' in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/TabLogFMS_SX_all.csv')
+
+    #--- carico tutti i file TabLogPostTHS
+    dflist=[]
+    filename = 'TabLogPostTHS'
+    for file in os.listdir('table/csv'):
+        if filename in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/' + filename + '_all.csv')
+
+    #--- carico tutti i file DiagnosisTabl
+    dflist=[]
+    filename = 'DiagnosisTabl'
+    for file in os.listdir('table/csv'):
+        if filename in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/' + filename + '_all.csv')
+
+    #--- carico tutti i file TabLogAntTHS
+    dflist=[]
+    filename = 'TabLogAntTHS'
+    for file in os.listdir('table/csv'):
+        if filename in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/' + filename + '_all.csv')
+
+    #--- carico tutti i file DiagnTableBasaments
+    dflist=[]
+    filename = 'DiagnTableBasaments'
+    for file in os.listdir('table/csv'):
+        if filename in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/' + filename + '_all.csv')
+
+    #--- carico tutti i file LONG_TERM_TEMP
+    dflist=[]
+    filename = 'LONG_TERM_TEMP'
+    for file in os.listdir('table/csv'):
+        if filename in file and not '_all' in file:
+            print(file)
+            df = load_data('table/csv/' + file)
+            dflist.append(df)
+
+    data_all = pd.concat(dflist)
+    data_all.sort_index(inplace = True)
+    data_all.to_csv('table/csv/' + filename + '_all.csv')

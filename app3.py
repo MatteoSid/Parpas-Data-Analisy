@@ -35,8 +35,10 @@ for filename in os.listdir('table/'):
             table_list.append(filename[:-4])
 
 # unisco i csv
-for table in table_list:
-    create_single_csv('table/', table)
+# for table in table_list:
+#     create_single_csv('table/', table)
+
+CARICA_TABELLE_BRUTTO()
 
 # elimino i file originali e tengo solo i .csv uniti che carico in un dizionario di dataframe
 dataDict={}
@@ -66,7 +68,7 @@ app.layout = html.Div([
         html.Div(['Tabella:',
             dcc.Dropdown(
                 id='tab_name',
-                options=[{'label': i, 'value': i} for i in table_list],
+                options=[{'label': i, 'value': i} for i in dataDict],
                 value=table_list[0],
                 clearable=False
             )
@@ -105,7 +107,7 @@ app.layout = html.Div([
     Input('tf_value', 'value'))
 def update_graph(tab_name, tf_value):
     
-    df = dataDict[tab_name + '_all']
+    df = dataDict[tab_name]
     if tf_value != '5T':
         df = df.resample(tf_value).mean()
     fig = px.line(df, height=800) #, width=1600, height=700)
