@@ -4,9 +4,15 @@ import dash_core_components as dcc
 import plotly.express as px
 from data_func import *
 import pandas as pd
-import os, csv
 import shutil
 import dash
+import os
+
+os.system('clear')
+
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # controllo se la cartella 'csv' è presente. Se c'è la elimino e la ricreo, se non c'è la creo.
 if os.path.isdir('table/csv'):
@@ -32,24 +38,23 @@ for filename in os.listdir('table/'):
 for table in table_list:
     create_single_csv('table/', table)
 
-# elimino i file originali e tengo solo i .csv uniti
+# elimino i file originali e tengo solo i .csv uniti che carico in un dizionario di dataframe
+dataDict={}
 for filename in os.listdir('table/csv'):
     if not filename.endswith('_all.csv'):
         os.remove('table/csv/'+filename)
-
-dataDict={}
-for filename in os.listdir('table/csv'):
-    print(filename)
-    df = pd.read_csv ('table/csv/'+filename, index_col='DataTime')
-    dataDict[filename[:-4]] = df
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+    elif filename.endswith('_all.csv'):
+        print(filename)
+        df = pd.read_csv ('table/csv/'+filename, index_col='DataTime')
+        df.index = pd.to_datetime(df.index)
+        df = df.resample('5T').mean()
+        dataDict[filename[:-4]] = df
 
 app.layout = html.Div([
+    
     html.Div([
 
+        #--- TITOLO PAGINA
         html.H1(
         children='Storico temperature',
         style={
@@ -57,6 +62,7 @@ app.layout = html.Div([
             #'color': colors['text']
         }),
 
+        #--- SELETTORE TABELLA
         html.Div(['Tabella:',
             dcc.Dropdown(
                 id='tab_name',
@@ -65,22 +71,29 @@ app.layout = html.Div([
                 clearable=False
             )
         ],
-        style={'width': '48%', 'display': 'inline-block'}),
+        style={ 'width': '48%', 
+                'display': 'inline-block'
+                }),
 
+        #--- SELETTORE TIMEFRAME
         html.Div(['Timeframe:',
             dcc.Dropdown(
                 id='tf_value',
                 options=[
-                    {'label': '5 minuti', 'value': '5T'},
-                    {'label': '15 minuti', 'value': '15T'},
-                    {'label': '30 minuti', 'value': '30T'},
-                    {'label': '1 ora', 'value': '1H'},
-                    {'label': '12 ore', 'value': '12H'},
-                    {'label': '1 giorno', 'value': '1D'}],
+                    {'label': '5 minuti',   'value': '5T'},
+                    {'label': '15 minuti',  'value': '15T'},
+                    {'label': '30 minuti',  'value': '30T'},
+                    {'label': '1 ora',      'value': '1H'},
+                    {'label': '12 ore',     'value': '12H'},
+                    {'label': '1 giorno',   'value': '1D'}],
                 value='1H',
                 clearable=False
             )
-        ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+        ],
+        style={ 'width': '48%', 
+                'float': 'right', 
+                'display': 'inline-block'
+                })
     ]),
 
     dcc.Graph(id='indicator-graphic')
@@ -93,8 +106,8 @@ app.layout = html.Div([
 def update_graph(tab_name, tf_value):
     
     df = dataDict[tab_name + '_all']
-    df.index = pd.to_datetime(df.index)
-    df = df.resample(tf_value).mean()
+    if tf_value != '5T':
+        df = df.resample(tf_value).mean()
     fig = px.line(df, height=800) #, width=1600, height=700)
     # fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
 
@@ -113,5 +126,5 @@ def update_graph(tab_name, tf_value):
     return fig
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=False, port=8051)
 
