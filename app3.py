@@ -38,7 +38,7 @@ for filename in os.listdir('table/'):
 # for table in table_list:
 #     create_single_csv('table/', table)
 
-CARICA_TABELLE_BRUTTO()
+UNISCI_TABELLE_BRUTTO()
 
 # elimino i file originali e tengo solo i .csv uniti che carico in un dizionario di dataframe
 dataDict={}

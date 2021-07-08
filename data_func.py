@@ -78,7 +78,7 @@ def create_single_csv(path_folder, tab_name):
     data_all.sort_index(inplace = True)
     data_all.to_csv(path_folder + '/csv/' + tab_name + '_all.csv')
 
-def CARICA_TABELLE_BRUTTO():
+def UNISCI_TABELLE_BRUTTO():
     #--- carico tutti i file TabLogFMS_DX
     dflist=[]
     for file in os.listdir('table/csv'):
