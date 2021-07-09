@@ -69,7 +69,7 @@ app.layout = html.Div([
             dcc.Dropdown(
                 id='tab_name',
                 options=[{'label': i, 'value': i} for i in dataDict],
-                value=table_list[0],
+                value=next(iter(dataDict)),
                 clearable=False
             )
         ],
