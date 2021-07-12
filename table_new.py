@@ -7,8 +7,8 @@ import plotly.express as px
 import pandas as pd
 
 #column_subset = [   't_HdStUp', 't_HdStLw', 't_DxRiga', 't_DxFond', 't_DxAmb', 't_SxRiga', 
- #                   't_SxFond', 't_SxAmb', 't_RigAnt', 't_Amb_Mn', 't_RMnPos', 't_FondMn', 
- #                   't_Envir', 'DataTime']
+#                    't_SxFond', 't_SxAmb', 't_RigAnt', 't_Amb_Mn', 't_RMnPos', 't_FondMn', 
+#                    't_Envir', 'DataTime']
 
 
 df = pd.read_csv (  'TOTALE_SONDE.csv',
@@ -32,6 +32,7 @@ app.layout = html.Div([
         #'color': colors['text']
     }),
     
+    #--- TENDINA Timeframe
     dcc.Dropdown(
                 id='tf_value',
                 options=[
