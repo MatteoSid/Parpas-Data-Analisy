@@ -1,10 +1,9 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 from dash.dependencies import Input, Output
+import dash_html_components as html
+import dash_core_components as dcc
 import plotly.express as px
-
 import pandas as pd
+import dash
 
 #column_subset = [   't_HdStUp', 't_HdStLw', 't_DxRiga', 't_DxFond', 't_DxAmb', 't_SxRiga', 
 #                    't_SxFond', 't_SxAmb', 't_RigAnt', 't_Amb_Mn', 't_RMnPos', 't_FondMn', 
@@ -16,7 +15,7 @@ df = pd.read_csv (  'TOTALE_SONDE.csv',
                     sep=';')
 df['DataTime'] = pd.to_datetime(df['DataTime'], format='%d.%m.%Y %H:%M:%S')
 df.set_index('DataTime', drop = True, inplace=True)
-#df = df.resample('5T').mean()
+df = df.resample('5T').mean()
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
