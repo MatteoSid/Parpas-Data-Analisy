@@ -62,4 +62,4 @@ def update_figure(tf_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=False, port=8050)
