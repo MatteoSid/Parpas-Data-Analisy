@@ -15,7 +15,7 @@ df = pd.read_csv (  'TOTALE_SONDE.csv',
                     sep=';')
 df['DataTime'] = pd.to_datetime(df['DataTime'], format='%d.%m.%Y %H:%M:%S')
 df.set_index('DataTime', drop = True, inplace=True)
-#df = df.resample('5T').mean()
+df = df.resample('5T').mean()
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -49,6 +49,7 @@ app.layout = html.Div([
     dcc.Graph(id='graph-with-slider'),
 ])
 
+
 @app.callback(
     Output('graph-with-slider', 'figure'),
     Input('tf_value', 'value'))
@@ -62,4 +63,4 @@ def update_figure(tf_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
