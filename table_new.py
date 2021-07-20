@@ -9,7 +9,6 @@ import dash
 #                    't_SxFond', 't_SxAmb', 't_RigAnt', 't_Amb_Mn', 't_RMnPos', 't_FondMn', 
 #                    't_Envir', 'DataTime']
 
-
 df = pd.read_csv (  'TOTALE_SONDE.csv',
                     #usecols=column_subset,
                     sep=';')

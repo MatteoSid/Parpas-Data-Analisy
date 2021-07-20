@@ -1,21 +1,29 @@
 from dash.dependencies import Input, Output
+from data_func import tab_to_df
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.express as px
 import pandas as pd
+import shutil
 import dash
+import os
 
-#column_subset = [   't_HdStUp', 't_HdStLw', 't_DxRiga', 't_DxFond', 't_DxAmb', 't_SxRiga', 
-#                    't_SxFond', 't_SxAmb', 't_RigAnt', 't_Amb_Mn', 't_RMnPos', 't_FondMn', 
-#                    't_Envir', 'DataTime']
+path = 'table_new/'
+path_dest = path + 'csv/'
+dataDict = {}
 
+# controllo se la cartella 'csv' è presente. Se c'è la elimino e la ricreo, se non c'è la creo.
+if os.path.isdir(path_dest):
+    shutil.rmtree(path_dest)
+    os.mkdir(path_dest)
+else:
+    os.mkdir(path_dest)
 
-df = pd.read_csv (  'TOTALE_SONDE.csv',
-                    #usecols=column_subset,
-                    sep=';')
-df['DataTime'] = pd.to_datetime(df['DataTime'], format='%d.%m.%Y %H:%M:%S')
-df.set_index('DataTime', drop = True, inplace=True)
-df = df.resample('5T').mean()
+for filename in os.listdir(path):
+    if (filename.endswith('.txt') or filename.endswith('.tab')): 
+        df = tab_to_df(path + filename)
+        if len(df) > 1:
+            dataDict[filename] = df
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -48,7 +56,6 @@ app.layout = html.Div([
     
     dcc.Graph(id='graph-with-slider'),
 ])
-
 
 @app.callback(
     Output('graph-with-slider', 'figure'),
