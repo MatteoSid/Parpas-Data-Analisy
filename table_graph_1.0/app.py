@@ -9,6 +9,7 @@ import webbrowser
 import threading
 import time
 from tqdm import tqdm
+
 def tab_to_df(filename):
         
     file1 = open(filename, "rb")
@@ -65,14 +66,12 @@ def start_webpage():
     time.sleep(3)
     webbrowser.open('http://127.0.0.1:' + str(address) + '/', new=0)
 
-os.system('clear')
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #--- 1° PARTE: Creazione tabelle e caricamento dati
 # se la cartella csv è presente carico i dati in memoria
-path = 'table/'
+path = os.getcwd() + '/table/'
 path_dest = path + 'csv/'
 dataDict = {}
 if os.path.isdir(path_dest):
