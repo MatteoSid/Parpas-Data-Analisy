@@ -2,13 +2,10 @@ from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.express as px
-from data_func import *
 import pandas as pd
-import shutil
 import dash
 import os
-from datetime import date, datetime
-import plotly.graph_objects as go
+
 os.system('clear')
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -16,7 +13,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #--- 1° PARTE: Creazione tabelle e caricamento dati
 # se la cartella csv è presente carico i dati in memoria
-path = 'table_new2/'
+path = 'table/'
 path_dest = path + 'csv/'
 dataDict = {}
 if os.path.isdir(path_dest):
@@ -29,7 +26,8 @@ if os.path.isdir(path_dest):
     for i in dataDict:
         print(i)
 else:
-    print('Cartella Table/csv/ non trovata.')
+    print('Cartella /table/csv/ non trovata.')
+    exit()
 
 app.layout = html.Div([
     
@@ -77,28 +75,8 @@ app.layout = html.Div([
                 'display': 'inline-block',
                 "margin-right": "100px"
                 }),
-
-        # html.Div(['Intervallo Date (non funziona)',
-        #     dcc.DatePickerRange(
-        #         id='my-date-picker-range',
-        #         min_date_allowed=date(2019, 1, 1),
-        #         max_date_allowed=date.today(),
-        #         initial_visible_month=date(2019, 1, 1),
-        #         end_date=date.today(),
-        #         display_format='DD-MM-YYYY',
-        #         start_date_placeholder_text='DD-MM-YYYY'
-
-        #     )
-        # ],
-        # style={ 'width': '20%', 
-        #         'float': 'right', 
-        #         'display': 'inline-block'
-        #         }),
-    
         html.Hr()
-
     ]),
-
     dcc.Graph(id='indicator-graphic')
 ])
 
@@ -115,11 +93,6 @@ def update_graph(tab_name, tf_value):
 
     fig = px.line(df, height=800) #, width=1600, height=700)
 
-    #--- aggiungo i pallini per vedere quando sono state rilevate le temperature
-    #fig.update_traces(mode='markers+lines')
-
-    # fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
-
     fig.update_layout(
         #title="Plot Title",
         xaxis_title="Time",
@@ -131,7 +104,6 @@ def update_graph(tab_name, tf_value):
             color='black'
             #color="RebeccaPurple"
             ))
-
     return fig
 
 if __name__ == '__main__':
