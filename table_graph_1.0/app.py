@@ -191,7 +191,6 @@ app.layout = html.Div([
                         "margin-left": "50px",
                         "margin-right": "100px"
                         })
-
     ]),
     dcc.Graph(id='indicator-graphic')
 ])
@@ -224,6 +223,9 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         fig.update_traces(mode='lines')
     else:
         fig.update_traces(mode='markers+lines')
+
+    if 'air_cons' in tab_name:
+        fig = px.bar(df) #, log_y=True)
 
     fig.update_layout(
         #title=prova,
