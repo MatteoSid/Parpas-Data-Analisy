@@ -115,6 +115,27 @@ app.layout = html.Div([
             #'color': colors['text']
         }),
 
+        html.Div(
+                    [
+                        html.H5("Product Summary"),
+                        html.P(
+                            "\
+                        As the industry’s first index fund for individual investors, \
+                        the Calibre Index Fund is a low-cost way to gain diversified exposure \
+                        to the U.S. equity market. The fund offers exposure to 500 of the \
+                        largest U.S. companies, which span many different industries and \
+                        account for about three-fourths of the U.S. stock market’s value. \
+                        The key risk for the fund is the volatility that comes with its full \
+                        exposure to the stock market. Because the Calibre Index Fund is broadly \
+                        diversified within the large-capitalization market, it may be \
+                        considered a core equity holding in a portfolio.",
+                            #style={"color": "#ffffff"},
+                            className="row",
+                        ),
+                    ],
+                    className="product",
+                ),
+
         #--- SELETTORE TABELLA
         html.Div(['Tabella:',
             dcc.Dropdown(
