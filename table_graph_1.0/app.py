@@ -2,22 +2,23 @@ from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.express as px
+from datetime import date
+from tqdm import tqdm
 import pandas as pd
-import dash
-import os
 import webbrowser
 import threading
+import dash
 import time
-from tqdm import tqdm
-from datetime import date
+import os
 
 def tab_to_df(filename):
         
     file1 = open(filename, "rb")
     df = pd.DataFrame()
     flag_data = 0
+    num_file = sum([1 for i in open(filename, "r", errors='ignore')])
     
-    pbar = tqdm(file1, desc=filename)
+    pbar = tqdm(file1, desc=filename, total=num_file)
     for line in pbar:
 
         if b'\xb0C' in line:     # se trovo il carattere °C lo ignoro
@@ -68,7 +69,7 @@ def start_webpage():
     webbrowser.open('http://127.0.0.1:' + str(address) + '/', new=0)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 
 #--- 1° PARTE: Creazione tabelle e caricamento dati
 # se la cartella csv è presente carico i dati in memoria
@@ -149,13 +150,26 @@ app.layout = html.Div([
                 "margin-right": "100px"
                 }),
 
-        html.Div(['Intervallo Date (non funziona)',
+        #--- CHECKBOX
+        # html.Div(['prova',
+        #     dcc.Checklist(
+        #         id='checklist-item',
+        #         options=[{'label': 'Markers', 'value': 'mk'}]
+        #         )],
+        # style={ #'width': '20%', 
+        #         #'float': 'left', 
+        #         'display': 'inline-block'
+        #         }),
+
+        #--- INTERVALLO DATE
+        dcc.Store(id='output-container-date-picker-range'),
+        html.Div(['Intervallo Date',
             dcc.DatePickerRange(
                 id='my-date-picker-range',
-                min_date_allowed=date(2021, 1, 1),
+                #min_date_allowed=date(2021, 1, 1),
                 clearable=True,
-                max_date_allowed=date.today(),
-                initial_visible_month=date(2021, 1, 1),
+                #max_date_allowed=date.today(),
+                #initial_visible_month=date(2021, 1, 1),
                 end_date=date.today(),
                 display_format='DD-MM-YYYY',
                 start_date_placeholder_text='DD-MM-YYYY'
@@ -169,14 +183,14 @@ app.layout = html.Div([
         html.Hr(),
 
         dcc.Checklist(
-        id='checklist-item',
-        options=[{'label': 'Markers', 'value': 'mk'}],
-        value=['mk'],
-        style={ 'width': '20%', 
-                'display': 'inline-block',
-                "margin-left": "50px",
-                "margin-right": "100px"
-                })
+                id='checklist-item',
+                options=[{'label': 'Markers', 'value': 'mk'}],
+                #value=[],
+                style={ 'width': '20%', 
+                        'display': 'inline-block',
+                        "margin-left": "50px",
+                        "margin-right": "100px"
+                        })
 
     ]),
     dcc.Graph(id='indicator-graphic')
@@ -184,13 +198,16 @@ app.layout = html.Div([
 
 @app.callback(
     Output('indicator-graphic', 'figure'),
+    Output('my-date-picker-range', 'min_date_allowed'),
+    Output('my-date-picker-range', 'max_date_allowed'),
+    Output('my-date-picker-range', 'initial_visible_month'),
+    #Output('my-date-picker-range', 'end_date'),
     Input('tab_name', 'value'),
     Input('tf_value', 'value'),
-    Input('output-container-date-picker-range', 'children'),
+    Input('output-container-date-picker-range', 'data'),
     Input('checklist-item', 'value'))
 def update_graph(tab_name, tf_value, data_range, checklist):
 
-    print('checklist: ', checklist)
     if tf_value != 'None':
         df = dataDict[tab_name]
         df = df.resample(tf_value).mean()
@@ -198,15 +215,14 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         df = dataDict[tab_name]
     
     if data_range:
-        print('data_range[0]: ', data_range[0])
-        print('data_range[1]: ', data_range[1])
         df = df.loc[data_range[0]:data_range[1]]
-        print(df.info())
 
     fig = px.line(df, height=800) #, width=1600, height=700)
 
-    if checklist == 'mk':
+    if checklist == None or checklist == []:
     #--- aggiungo i pallini per vedere quando sono state rilevate le temperature
+        fig.update_traces(mode='lines')
+    else:
         fig.update_traces(mode='markers+lines')
 
     fig.update_layout(
@@ -220,10 +236,14 @@ def update_graph(tab_name, tf_value, data_range, checklist):
             color='black'
             #color="RebeccaPurple"
             ))
-    return fig
+
+    time_start = (str(dataDict['Long_term_temp.tab'].index.min()))[:10]
+    time_end = (str(dataDict['Long_term_temp.tab'].index.max()))[:10]
+
+    return fig, time_start, time_end, time_start
 
 @app.callback(
-    dash.dependencies.Output('output-container-date-picker-range', 'children'),
+    dash.dependencies.Output('output-container-date-picker-range', 'data'),
     [dash.dependencies.Input('my-date-picker-range', 'start_date'),
      dash.dependencies.Input('my-date-picker-range', 'end_date')])
 def update_output(start_date, end_date):
@@ -237,5 +257,5 @@ def update_output(start_date, end_date):
         return [start_date_object, end_date_object]
 
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8051)
+    app.run_server(debug=True, port=8051)
 
