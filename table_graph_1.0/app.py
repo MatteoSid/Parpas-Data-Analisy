@@ -18,7 +18,7 @@ def tab_to_df(filename):
     flag_data = 0
     num_file = sum([1 for i in open(filename, "r", errors='ignore')])
     
-    pbar = tqdm(file1, desc=filename, total=num_file)
+    pbar = tqdm(file1, desc=filename.split('/')[-1], total=num_file)
     for line in pbar:
 
         if b'\xb0C' in line:     # se trovo il carattere °C lo ignoro
@@ -61,6 +61,8 @@ def tab_to_df(filename):
             df.drop(column, axis=1, inplace=True)
         else:
             df[column] = df[column].apply(pd.to_numeric)
+
+    df.sort_index(inplace = True)
     return df
 
 def start_webpage():
@@ -69,7 +71,7 @@ def start_webpage():
     webbrowser.open('http://127.0.0.1:' + str(address) + '/', new=0)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=False)
 
 #--- 1° PARTE: Creazione tabelle e caricamento dati
 # se la cartella csv è presente carico i dati in memoria
@@ -81,6 +83,12 @@ if os.path.isdir(path_dest):
         df = pd.read_csv(path_dest + filename)
         df['DataTime'] = pd.to_datetime(df['DataTime'], format='%Y-%m-%d %H:%M:%S')
         df.set_index('DataTime', drop = True, inplace=True)
+
+        # Controllo le colonne con tutti i valori a zero, se ce ne sono le elimino
+        for column in df:
+            if (df[column] == 0).all():
+                df.drop(column, axis=1, inplace=True)
+
         dataDict[filename] = df
     
     for i in dataDict:
@@ -111,30 +119,32 @@ app.layout = html.Div([
         html.H1(
         children='Storico temperature (v1.0)',
         style={
+            'margin-top': '20px',
             'textAlign': 'center'
             #'color': colors['text']
         }),
 
-        html.Div(
-                    [
-                        html.H5("Product Summary"),
-                        html.P(
-                            "\
-                        As the industry’s first index fund for individual investors, \
-                        the Calibre Index Fund is a low-cost way to gain diversified exposure \
-                        to the U.S. equity market. The fund offers exposure to 500 of the \
-                        largest U.S. companies, which span many different industries and \
-                        account for about three-fourths of the U.S. stock market’s value. \
-                        The key risk for the fund is the volatility that comes with its full \
-                        exposure to the stock market. Because the Calibre Index Fund is broadly \
-                        diversified within the large-capitalization market, it may be \
-                        considered a core equity holding in a portfolio.",
-                            #style={"color": "#ffffff"},
-                            className="row",
-                        ),
-                    ],
-                    className="product",
-                ),
+        # html.Div(
+        #     [
+        #         html.H5("Comandi:"),
+        #         html.P(
+        #             children="\
+        #             - trascinare un'area del grafico per visualizzare solo l'area selezionata;\n - doppio click sul grafico per tornare alle dimensioni originali;\n \
+        #             - doppio click su una voce nella legenda per visualizzare solo quell'elemento;\n \
+        #             - dopio clicl su una voce deselezionata nella legenda per riattivare tutti gli elementi",
+        #             #style={"color": "#ffffff"},
+        #             className="row"
+        #         ),
+        #     ],
+        #     className="product",
+        #     style={ #'width': '20%', 
+        #                 'display': 'inline-block',
+        #                 "margin-left": "50px",
+        #                 "margin-right": "100px"
+        #                 }
+        # ),
+
+        html.Hr(),
 
         #--- SELETTORE TABELLA
         html.Div(['Tabella:',
@@ -159,6 +169,9 @@ app.layout = html.Div([
                     {'label': 'Dati grezzi', 'value': 'None'},
                     {'label': '30 minuti',  'value': '30T'},
                     {'label': '1 ora',      'value': '1H'},
+                    {'label': '2 ore',      'value': '2H'},
+                    {'label': '4 ore',      'value': '4H'},
+                    {'label': '6 ore',      'value': '6H'},
                     {'label': '12 ore',     'value': '12H'},
                     {'label': '1 giorno',   'value': '1D'}],
                 value='None',
@@ -171,19 +184,9 @@ app.layout = html.Div([
                 "margin-right": "100px"
                 }),
 
-        #--- CHECKBOX
-        # html.Div(['prova',
-        #     dcc.Checklist(
-        #         id='checklist-item',
-        #         options=[{'label': 'Markers', 'value': 'mk'}]
-        #         )],
-        # style={ #'width': '20%', 
-        #         #'float': 'left', 
-        #         'display': 'inline-block'
-        #         }),
-
         #--- INTERVALLO DATE
         dcc.Store(id='output-container-date-picker-range'),
+        
         html.Div(['Intervallo Date',
             dcc.DatePickerRange(
                 id='my-date-picker-range',
@@ -201,8 +204,7 @@ app.layout = html.Div([
                 'display': 'inline-block'
                 }),
 
-        html.Hr(),
-
+        #--- CHECKBOX PER L'ATTIVAZIONE DEI MARKERS
         dcc.Checklist(
                 id='checklist-item',
                 options=[{'label': 'Markers', 'value': 'mk'}],
@@ -210,9 +212,32 @@ app.layout = html.Div([
                 style={ 'width': '20%', 
                         'display': 'inline-block',
                         "margin-left": "50px",
+                        "margin-right": "100px",
+                        "margin-top":"20px"
+                        }),
+
+        html.Hr(),
+
+        #--- INFO TABELLA
+        html.Div(
+            [
+                html.H5("Info Tabella:"),
+                html.P(
+                    id='test',
+                    #style={"color": "#ffffff"},
+                    className="row"
+                ),
+            ],
+            className="product",
+            style={ 'width': '20%', 
+                        'display': 'inline-block',
+                        "margin-left": "50px",
                         "margin-right": "100px"
-                        })
+                        }
+        ),
     ]),
+
+    #--- GRAFICO
     dcc.Graph(id='indicator-graphic')
 ])
 
@@ -222,6 +247,7 @@ app.layout = html.Div([
     Output('my-date-picker-range', 'max_date_allowed'),
     Output('my-date-picker-range', 'initial_visible_month'),
     #Output('my-date-picker-range', 'end_date'),
+    Output('test', 'children'),
     Input('tab_name', 'value'),
     Input('tf_value', 'value'),
     Input('output-container-date-picker-range', 'data'),
@@ -260,10 +286,10 @@ def update_graph(tab_name, tf_value, data_range, checklist):
             #color="RebeccaPurple"
             ))
 
-    time_start = (str(dataDict['Long_term_temp.tab'].index.min()))[:10]
-    time_end = (str(dataDict['Long_term_temp.tab'].index.max()))[:10]
+    time_start = (str(df.index.min()))[:10]
+    time_end = (str(df.index.max()))[:10]
 
-    return fig, time_start, time_end, time_start
+    return fig, time_start, time_end, time_start, 'Intervallo tabella: dal ' + time_start + ' al ' + time_end + '\nNumero rilevazioni: ' + str(len(df))
 
 @app.callback(
     dash.dependencies.Output('output-container-date-picker-range', 'data'),
