@@ -16,9 +16,9 @@ import sys
 logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
                     datefmt='%d-%m-%y %H:%M:%S',
                     filename = "logfile.log",
-                    level=logging.INFO
+                    level=logging.DEBUG
                     )
-logging.info('\n-------------\nAvvio programma')
+logging.info('\n------------- Avvio programma')
 
 def tab_to_df(filename):
     
@@ -26,7 +26,7 @@ def tab_to_df(filename):
         file1 = open(filename, "rb")
         df = pd.DataFrame()
     except:
-        logging.info('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+        logging.error('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
                                                 sys.exc_info()[1],
                                                 sys.exc_info()[2].tb_lineno))
         sys.exit()
@@ -106,6 +106,7 @@ if os.path.isdir(path_dest):
 
         dataDict[filename] = df
 else:
+    logging.debug('Creo i file csv')
     print('\nTrasformo le tabelle per la visualizzazione, potrebbe richiedere qualche minuto...\n')
     try:
         os.mkdir(path_dest)
@@ -115,7 +116,8 @@ else:
                                                 sys.exc_info()[1],
                                                 sys.exc_info()[2].tb_lineno))
         sys.exit()
-        
+    
+    start = time.process_time()
     for filename in os.listdir(path):
         if (filename.endswith('.txt') or filename.endswith('.tab')): 
             df = tab_to_df(path + filename)
@@ -123,8 +125,10 @@ else:
                 df.sort_index(inplace = True)
                 dataDict[filename] = df
                 df.to_csv(path_dest+filename, index=True)
+    logging.debug('File .csv creati in : ' + str(round(((time.process_time() - start)/60), 2)) + ' minuti')
 
 if dataDict != {}:
+    logging.debug('Tabelle caricate: ' + str(list(dataDict.keys())))
     t = threading.Thread(target=start_webpage)
     t.start()
 else:
@@ -273,10 +277,12 @@ app.layout = html.Div([
     Input('output-container-date-picker-range', 'data'),
     Input('checklist-item', 'value'))
 def update_graph(tab_name, tf_value, data_range, checklist):
+    logging.debug('Tabella selezionata: ' + tab_name)
 
     df = dataDict[tab_name]
     if tf_value != 'None':
         df = df.resample(tf_value).mean()
+        logging.debug('Timeframe cambiato: ' + tf_value)
     
     # mi salvo la data di inizio e quella di fine
     time_start = (str(df.index.min()))[:10]
@@ -285,14 +291,17 @@ def update_graph(tab_name, tf_value, data_range, checklist):
     # se viene selezionato un range di date taglio il dataframe
     if data_range:
         df = df.loc[data_range[0]:data_range[1]]
+        logging.debug('Range date cambiato: ' + data_range[0] + '-' + data_range[1])
 
     fig = px.line(df, height=800) #, width=1600, height=700)
 
     if checklist == None or checklist == []:
     #--- aggiungo i pallini per vedere quando sono state rilevate le temperature
         fig.update_traces(mode='lines')
+        logging.debug('Markers disattivato')
     else:
         fig.update_traces(mode='markers+lines')
+        logging.debug('Markers attivato')
 
     if 'air_cons' in tab_name:
         fig = px.bar(df) #, log_y=True)
