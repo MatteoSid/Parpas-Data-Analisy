@@ -311,5 +311,5 @@ def update_output(start_date, end_date):
         return [start_date_object, end_date_object]
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=False, port=8051)
 
