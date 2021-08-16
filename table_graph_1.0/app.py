@@ -111,7 +111,7 @@ else:
         os.mkdir(path_dest)
     except:
         print('Errore: non è stata trovata la cartella "table"')
-        logging.info('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+        logging.error('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
                                                 sys.exc_info()[1],
                                                 sys.exc_info()[2].tb_lineno))
         sys.exit()
@@ -128,7 +128,7 @@ if dataDict != {}:
     t = threading.Thread(target=start_webpage)
     t.start()
 else:
-    logging.warning('Nessuna tabella trovata')
+    logging.error('Nessuna tabella trovata')
     sys.exit()
 
 app.layout = html.Div([

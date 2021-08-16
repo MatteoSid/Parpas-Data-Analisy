@@ -1,0 +1,217 @@
+BEGIN LONG_TERM_TEMP3.TAB MM
+TableDescription (
+  columns:= [
+    CfgColumnDescription (
+      key:="NR",
+      width:=8,
+      unit:=INDEX,
+      initial:="0",
+      minimum:="0",
+      maximum:="9999999",
+      unique:=TRUE,
+      readonly:=TRUE
+    ),
+    CfgColumnDescription (
+      key:="LastLine",
+      width:=9,
+      unit:=DEC,
+      minimum:="0",
+      maximum:="999999"
+    ),
+    CfgColumnDescription (
+      key:="t_HydrTa",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_cool_water",
+      width:=13,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Column",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_HdStUp",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_HdStLw",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Envir",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_RigAnt",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_RMnPos",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Amb_Mn",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_FondMn",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_SxRiga",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_DxRiga",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_SxAmb",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_DxAmb",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_SxFond",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_DxFond",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="PLC_Byte",
+      width:=10,
+      unit:=BIN,
+      minimum:="%00000000",
+      maximum:="%11111111",
+      unique:=FALSE
+    ),
+    CfgColumnDescription (
+      key:="PLC_Byt2",
+      width:=10,
+      unit:=BIN,
+      minimum:="%00000000",
+      maximum:="%11111111",
+      unique:=FALSE
+    ),
+    CfgColumnDescription (
+      key:="PLC_VAL",
+      width:=12,
+      unit:=FLOAT,
+      minimum:="-99999.9999",
+      maximum:="+99999.9999",
+      unique:=FALSE
+    ),
+    CfgColumnDescription (
+      key:="DataTime",
+      width:=20,
+      unit:=TSTAMP,
+      minimum:="00:00:00 01.01.1971",
+      maximum:="23:59:59 31.12.2037"
+    )
+  ],
+  primaryKey:="NR",
+  modificationKey:="DataTime",
+  columnText:= [
+    "LastLine en 'Last Row'",
+    "LastLine de 'Letzte Reihe'",
+    "LastLine it 'Ultima Linea'",
+    "t_HydrTa en 'Temperature [°C]'",
+    "t_HydrTa it 'Temperatura Olio Tavola [°C]'",
+    "t_cool_water en  'Temperature [°C]'",
+    "t_cool_water it  'Temperatura Acqua Refrigerante [°C]'",
+    "t_Column en 'Temperature [°C]'",
+    "t_Column it 'Temperatura Montante [°C]'",
+    "t_HdStUp en 'Temperature [°C]'",
+    "t_HdStUp it 'Temperatura Slitta Superiore [°C]'",
+    "t_HdStLw en 'Temperature [°C]'",
+    "t_HdStLw it 'Temperatura Slitta Inferiore [°C]'",
+    "t_Envir en  'Temperature [°C]'",
+    "t_Envir it  'Temperatura Ambiente [°C]'",
+    "t_RigAnt en 'Temperature [°C]'",
+    "t_RigAnt it 'Temperatura Inizio Riga Y Basamento Montante [°C]'",
+    "t_RMnPos en 'Temperature [°C]'",
+    "t_RMnPos it 'Temperatura Fine riga Y Basamento Montante [°C]'",
+    "t_Amb_Mn en 'Temperature [°C]'",
+    "t_Amb_Mn it 'Temperatura In Aria Inizio Riga Basamento Montante [°C]'",
+    "t_FondMn en 'Temperature [°C]'",
+    "t_FondMn it 'Temperatura Fondazione Montante su Putrella [°C]'",
+    "t_SxRiga en 'Temperature [°C]'",
+    "t_SxRiga it 'Temperatura Inizio Riga X Basamento Tavola [°C]'",
+    "t_DxRiga en 'Temperature [°C]'",
+    "t_DxRiga it 'Temperatura Fine Riga X Basamento Tavola [°C]'",
+    "t_SxAmb en  'Temperature [°C]'",
+    "t_SxAmb it  'Temperatura In Aria Inizio Riga X Basamento Tavola [°C]'",
+    "t_DxAmb en  'Temperature [°C]'",
+    "t_DxAmb it  'Temperatura In Aria Fine Riga X Basamento Tavola [°C]'",
+    "t_SxFond en 'Temperature [°C]'",
+    "t_SxFond it 'Temperatura Fondazione su putrella Sx Basasmento Tavola [°C]'",
+    "t_DxFond en 'Temperature [°C]'",
+    "t_DxFond it 'Temperatura Fondazione su putrella Dx Basasmento Tavola [°C]'",
+    "DataTime en 'Data and Time'",
+    "DataTime it 'Data e Ora'",
+    "PLC_VAL en 'Coordinate'",
+    "PLC_VAL it 'Coordinata'",
+    "PLC_Byte en 'PLC_Byte'",
+    "PLC_Byte it 'PLC_Byte'",
+    "PLC_Byt2 it 'PLC_Byte'",
+    "PLC_Byt2 en 'PLC_Byt2'"
+  ]
+)
+NR      LastLine t_HydrTa t_cool_water t_Column t_HdStUp t_HdStLw t_Envir  t_RigAnt t_RMnPos t_Amb_Mn t_FondMn t_SxRiga t_DxRiga t_SxAmb  t_DxAmb  t_SxFond t_DxFond PLC_Byte  PLC_Byt2  PLC_VAL     DataTime            
+0       1000                                                                                                                                                                             +0.022      09:21:01 09.03.2021 
+1                +20.3    +0           +20.3    +20.3    +20.3    +20.3    +20.3    +20.3    +20.3    +22.2    +20.9    +22.4    +21.6    +22       +20.4   +0       %00000000 %00000000 +0.022      10:46:01 25.11.2017 
+2                +20.3    +0           +20.3    +20.3    +20.3    +20.3    +20.3    +20.3    +20.3    +22.2    +20.9    +22.4    +21.6    +22       +20.4   +0       %00000000 %00000000 +0.022      10:46:01 25.11.2017 
+[END]
