@@ -62,6 +62,11 @@ def tab_to_df(filename):
         else:
             df[column] = df[column].apply(pd.to_numeric)
 
+    # controllo se ci sono colonne nulle e in caso le elimino
+    for column in df:
+        if (df[column] == 0).all():
+            df.drop(column, axis=1, inplace=True)
+
     df.sort_index(inplace = True)
     return df
 
@@ -85,9 +90,9 @@ if os.path.isdir(path_dest):
         df.set_index('DataTime', drop = True, inplace=True)
 
         # Controllo le colonne con tutti i valori a zero, se ce ne sono le elimino
-        for column in df:
-            if (df[column] == 0).all():
-                df.drop(column, axis=1, inplace=True)
+        # for column in df:
+        #     if (df[column] == 0).all():
+        #         df.drop(column, axis=1, inplace=True)
 
         dataDict[filename] = df
     
@@ -254,12 +259,15 @@ app.layout = html.Div([
     Input('checklist-item', 'value'))
 def update_graph(tab_name, tf_value, data_range, checklist):
 
+    df = dataDict[tab_name]
     if tf_value != 'None':
-        df = dataDict[tab_name]
         df = df.resample(tf_value).mean()
-    else:
-        df = dataDict[tab_name]
     
+    # mi salvo la data di inizio e quella di fine
+    time_start = (str(df.index.min()))[:10]
+    time_end = (str(df.index.max()))[:10]
+
+    # se viene selezionato un range di date taglio il dataframe
     if data_range:
         df = df.loc[data_range[0]:data_range[1]]
 
@@ -285,9 +293,6 @@ def update_graph(tab_name, tf_value, data_range, checklist):
             color='black'
             #color="RebeccaPurple"
             ))
-
-    time_start = (str(df.index.min()))[:10]
-    time_end = (str(df.index.max()))[:10]
 
     return fig, time_start, time_end, time_start, 'Intervallo tabella: dal ' + time_start + ' al ' + time_end + '\nNumero rilevazioni: ' + str(len(df))
 
