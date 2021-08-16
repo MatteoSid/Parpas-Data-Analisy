@@ -10,11 +10,26 @@ import threading
 import dash
 import time
 import os
+import logging
+import sys
+
+logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
+                    datefmt='%d-%m-%y %H:%M:%S',
+                    filename = "logfile.log",
+                    level=logging.INFO
+                    )
+logging.info('\n-------------\nAvvio programma')
 
 def tab_to_df(filename):
-        
-    file1 = open(filename, "rb")
-    df = pd.DataFrame()
+    
+    try:
+        file1 = open(filename, "rb")
+        df = pd.DataFrame()
+    except:
+        logging.info('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+                                                sys.exc_info()[1],
+                                                sys.exc_info()[2].tb_lineno))
+        sys.exit()
     flag_data = 0
     num_file = sum([1 for i in open(filename, "r", errors='ignore')])
     
@@ -89,32 +104,32 @@ if os.path.isdir(path_dest):
         df['DataTime'] = pd.to_datetime(df['DataTime'], format='%Y-%m-%d %H:%M:%S')
         df.set_index('DataTime', drop = True, inplace=True)
 
-        # Controllo le colonne con tutti i valori a zero, se ce ne sono le elimino
-        # for column in df:
-        #     if (df[column] == 0).all():
-        #         df.drop(column, axis=1, inplace=True)
-
         dataDict[filename] = df
-    
-    for i in dataDict:
-        print(i)
 else:
     print('\nTrasformo le tabelle per la visualizzazione, potrebbe richiedere qualche minuto...\n')
-    os.mkdir(path_dest)
+    try:
+        os.mkdir(path_dest)
+    except:
+        print('Errore: non è stata trovata la cartella "table"')
+        logging.info('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+                                                sys.exc_info()[1],
+                                                sys.exc_info()[2].tb_lineno))
+        sys.exit()
+        
     for filename in os.listdir(path):
         if (filename.endswith('.txt') or filename.endswith('.tab')): 
             df = tab_to_df(path + filename)
             if len(df) > 5:
-                #df = df.resample('10T').mean()
                 df.sort_index(inplace = True)
                 dataDict[filename] = df
                 df.to_csv(path_dest+filename, index=True)
 
-    for i in dataDict:
-        print(i)
-
-t = threading.Thread(target=start_webpage)
-t.start()
+if dataDict != {}:
+    t = threading.Thread(target=start_webpage)
+    t.start()
+else:
+    logging.warning('Nessuna tabella trovata')
+    sys.exit()
 
 app.layout = html.Div([
     
