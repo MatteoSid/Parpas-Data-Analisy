@@ -1,0 +1,158 @@
+BEGIN DOMOCLIMA_TEMP3.TAB MM
+TableDescription (
+  columns:= [
+    CfgColumnDescription (
+      key:="NR",
+      width:=8,
+      unit:=INDEX,
+      initial:="0",
+      minimum:="0",
+      maximum:="9999999",
+      unique:=TRUE,
+      readonly:=TRUE
+    ),
+    CfgColumnDescription (
+      key:="LastLine",
+      width:=9,
+      unit:=DEC,
+      minimum:="0",
+      maximum:="999999"
+    ),
+    CfgColumnDescription (
+      key:="t_Envir",
+      width:=9,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Request_AntColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Exit_AntColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Probe_AntColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Request_PostColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Exit_PostColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Probe_PostColumn",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Request_Pallet_CU",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Exit_Pallet_CU",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Probe_Pallet_CU",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Request_Pallet_QE",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Exit_Pallet_QE",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="t_Probe_Pallet_QE",
+      width:=22,
+      unit:=FLOAT,
+      minimum:="-99999.9",
+      maximum:="+99999.9"
+    ),
+    CfgColumnDescription (
+      key:="DataTime",
+      width:=20,
+      unit:=TSTAMP,
+      minimum:="00:00:00 01.01.1971",
+      maximum:="23:59:59 31.12.2037"
+    )
+  ],
+  primaryKey:="NR",
+  modificationKey:="DataTime",
+  columnText:= [
+    "LastLine en 'Last Line Written'",
+    "LastLine it 'Ultima Linea Scritta'",
+    "t_Envir en 'Temperature Environment [°C]'",
+    "t_Envir it 'Temperatura Ambiente Sopra Pensile Operatore [°C]'",
+    "t_Request_AntColumn en 'Temperature [°C]'",
+    "t_Request_AntColumn it 'Temperatura Richiesta Anteriore Montante [°C]'",
+    "t_Exit_AntColumn en 'Temperature [°C]'",
+    "t_Exit_AntColumn it 'Temperatura Uscita DomoClima Anteriore Montante [°C]'",
+    "t_Probe_AntColumn en 'Temperature [°C]'",
+    "t_Probe_AntColumn it 'Temperatura Sonda DomoClima Anteriore Montante [°C]'",
+    "t_Request_PostColumn en 'Temperature [°C]'",
+    "t_Request_PostColumn it 'Temperatura Richiesta Posteriore Montante [°C]'",
+    "t_Exit_PostColumn en 'Temperature [°C]'",
+    "t_Exit_PostColumn it 'Temperatura Uscita DomoClima Posteriore Montante [°C]'",
+    "t_Probe_PostColumn en 'Temperature [°C]'",
+    "t_Probe_PostColumn it 'Temperatura Sonda DomoClima Posteriore Montante [°C]'",
+    "t_Request_Pallet_CU en 'Temperature [°C]'",
+    "t_Request_Pallet_CU it 'Temperatura Richiesta Pallet Zona Cambio Utensili [°C]'",
+    "t_Exit_Pallet_CU en 'Temperature [°C]'",
+    "t_Exit_Pallet_CU it 'Temperatura Uscita DomoClima Pallet Zona Cambio Utensili [°C]'",
+    "t_Probe_Pallet_CU en 'Temperature [°C]'",
+    "t_Probe_Pallet_CU it 'Temperatura Sonda DomoClima Pallet Zona Cambio Utensili [°C]'",
+    "t_Request_Pallet_QE en 'Temperature [°C]'",
+    "t_Request_Pallet_QE it 'Temperatura Richiesta Pallet Zona Quadro Elettrico [°C]'",
+    "t_Exit_Pallet_QE en 'Temperature [°C]'",
+    "t_Exit_Pallet_QE it 'Temperatura Uscita DomoClima Pallet Zona Quadro Elettrico [°C]'",
+    "t_Probe_Pallet_QE en 'Temperature [°C]'",
+    "t_Probe_Pallet_QE it 'Temperatura Sonda DomoClima Pallet Zona Quadro Elettrico [°C]'",
+    "DataTime en 'Data and Time'",
+    "DataTime it 'Data e Ora'"
+  ]
+)
+NR      LastLine t_Envir  t_Request_AntColumn   t_Exit_AntColumn      t_Probe_AntColumn     t_Request_PostColumn  t_Exit_PostColumn     t_Probe_PostColumn    t_Request_Pallet_CU   t_Exit_Pallet_CU      t_Probe_Pallet_CU     t_Request_Pallet_QE   t_Exit_Pallet_QE      t_Probe_Pallet_QE     DataTime            
+0       13393    +19.7    +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 09:40:01 09.03.2021 
+1                +19.7    +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 +16.2                 02:45:01 21.02.2021 
+[END]
