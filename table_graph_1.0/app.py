@@ -2,7 +2,7 @@ from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.express as px
-from datetime import date
+from datetime import date, datetime
 from tqdm import tqdm
 import pandas as pd
 import webbrowser
@@ -15,7 +15,7 @@ import sys
 
 logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
                     datefmt='%d-%m-%y %H:%M:%S',
-                    filename = "logfile.log",
+                    filename = ".logfile.log",
                     level=logging.DEBUG
                     )
 logging.info('\n------------- Avvio programma')
@@ -251,6 +251,11 @@ app.layout = html.Div([
                     #style={"color": "#ffffff"},
                     className="row"
                 ),
+                html.P(
+                    id='test2',
+                    #style={"color": "#ffffff"},
+                    className="row"
+                )
             ],
             className="product",
             style={ 'width': '20%', 
@@ -272,6 +277,7 @@ app.layout = html.Div([
     Output('my-date-picker-range', 'initial_visible_month'),
     #Output('my-date-picker-range', 'end_date'),
     Output('test', 'children'),
+    Output('test2', 'children'),
     Input('tab_name', 'value'),
     Input('tf_value', 'value'),
     Input('output-container-date-picker-range', 'data'),
@@ -318,7 +324,12 @@ def update_graph(tab_name, tf_value, data_range, checklist):
             #color="RebeccaPurple"
             ))
 
-    return fig, time_start, time_end, time_start, 'Intervallo tabella: dal ' + time_start + ' al ' + time_end + '\nNumero rilevazioni: ' + str(len(df))
+    
+    #datetime.strptime(time_start, '%Y-%m-%d').strftime('%m/%d/%y')
+    return fig, time_start, time_end, time_start, \
+        'Intervallo tabella: dal ' + datetime.strptime(time_start, '%Y-%m-%d').strftime('%m/%d/%y') \
+        + ' al ' + datetime.strptime(time_end, '%Y-%m-%d').strftime('%m/%d/%y'), \
+        'Numero punti: ' + str(len(df))
 
 @app.callback(
     dash.dependencies.Output('output-container-date-picker-range', 'data'),
