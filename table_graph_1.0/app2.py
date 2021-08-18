@@ -138,16 +138,16 @@ else:
 
 app.layout = html.Div([
     
-    #--- TITOLO PAGINA
     html.Div([
         
+        #--- TITOLO PAGINA
         html.Div([
             html.H1(
             children='Storico temperature (v2.0)',
             style={
                 'margin-top': '20px',
-                'textAlign': 'center'
-                }),
+                'textAlign': 'center'}
+                ),
 
             html.Hr()
         ]),
@@ -169,8 +169,8 @@ app.layout = html.Div([
                     style={ 'width': '15%', 
                             'display': 'inline-block',
                             "margin-left": "50px",
-                            "margin-right": "50px"
-                            }),
+                            "margin-right": "50px"}
+                    ),
         
             html.Div([
                 'Timeframe:',
@@ -191,8 +191,8 @@ app.layout = html.Div([
                     style={ 'width': '15%', 
                             'display': 'inline-block',
                             "margin-right": "50px",
-                            "verticalAlign": "top"
-                            }),
+                            "verticalAlign": "top"}
+                    ),
 
             dcc.Store(id='output-container-date-picker-range'),
             
@@ -208,10 +208,10 @@ app.layout = html.Div([
                     display_format='DD-MM-YYYY',
                     start_date_placeholder_text='DD-MM-YYYY')
                     ],
-                    style={ 'width': '20%', 
+                    style={ 'width': '18%', 
                             'display': 'inline-block',
-                            "verticalAlign": "top"
-                            }),
+                            "verticalAlign": "top"}
+                    ),
 
             #--- INFO TABELLA
             html.Div(
@@ -230,20 +230,22 @@ app.layout = html.Div([
                 style={ 'width': '30%',
                         'float': 'right', 
                         'display': 'inline-block',
-                        "verticalAlign": "top"
-                        })
-        ],
-        style={ "margin-down": "20px"
-                })
-    ]),
+                        "verticalAlign": "top"}
+                    )
+            ],
+            style={ 
+                "margin-down": "20px"}
+            )
+        ]),
 
     html.Div([
         #--- GRAFICO
         dcc.Graph(id='indicator-graphic')
-    ],
-    style={ "margin-top": "20px",
-            "verticalAlign": "down"
-            })
+        ],
+        style={ 
+            "margin-top": "20px",
+            "verticalAlign": "down"}
+        )
 ])
 
 @app.callback(
