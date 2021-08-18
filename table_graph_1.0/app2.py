@@ -1,18 +1,17 @@
 from dash.dependencies import Input, Output
+from datetime import date, datetime
 import dash_html_components as html
 import dash_core_components as dcc
-from dash_html_components.Div import Div
 import plotly.express as px
-from datetime import date, datetime
 from tqdm import tqdm
 import pandas as pd
 import webbrowser
 import threading
+import logging
 import dash
 import time
-import os
-import logging
 import sys
+import os
 
 logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
                     datefmt='%d-%m-%y %H:%M:%S',
@@ -130,8 +129,8 @@ else:
 
 if dataDict != {}:
     logging.debug('Tabelle caricate: ' + str(list(dataDict.keys())))
-    t = threading.Thread(target=start_webpage)
-    t.start()
+    #t = threading.Thread(target=start_webpage)
+    #t.start()
 else:
     logging.error('Nessuna tabella trovata')
     sys.exit()
@@ -152,7 +151,9 @@ app.layout = html.Div(
                     ),
 
                 html.Hr()
-            ]),
+            ],
+            className='title'
+            ),
 
         #--- OPZIONI PAGINA
         html.Div(
@@ -162,6 +163,7 @@ app.layout = html.Div(
                     'Tabella:',
                     dcc.Dropdown(
                         id='tab_name',
+                        className='product',
                         options=[{'label': i, 'value': i} for i in dataDict],
                         value=next(iter(dataDict)),
                         clearable=False
@@ -172,6 +174,7 @@ app.layout = html.Div(
                             options=[{'label': 'Punti', 'value': 'mk'}]
                             )
                 ],
+                className='product',
                 style={ 'width': '15%', 
                         'display': 'inline-block',
                         "margin-left": "50px",
@@ -196,6 +199,7 @@ app.layout = html.Div(
                         clearable=False
                         )
                 ],
+                className='product',
                 style={ 'width': '15%', 
                         'display': 'inline-block',
                         "margin-right": "50px",
@@ -217,6 +221,7 @@ app.layout = html.Div(
                         with_portal = True
                         )
                 ],
+                className='product',
                 style={ 'width': '18%', 
                         'display': 'inline-block',
                         "verticalAlign": "top"}
@@ -226,23 +231,18 @@ app.layout = html.Div(
             html.Div(
                 [
                     html.H5("Info Tabella:"),
-
-                    html.P(
-                        id='test',
-                        className="row"),
-
-                    html.P(
-                        id='test2',
-                        className="row")
+                    html.P(id='test'),
+                    html.P(id='test2')
                 ],
                 className="product",
                 style={ 'width': '30%',
                         'float': 'right', 
                         'display': 'inline-block',
-                        "verticalAlign": "top"}
+                        "verticalAlign": "top",
+                        'orizontalAlign': 'center'}
                 )
             ],
-            style={ "margin-down": "20px"}
+            className='options'
             )
         ]),
 
@@ -252,8 +252,9 @@ app.layout = html.Div(
             dcc.Graph(id='indicator-graphic')
         ],
         style={ 
-            "margin-top": "20px",
-            "verticalAlign": "down"}
+            "margin-top": "30px",
+            "verticalAlign": "down"},
+        className='graph'
         )
 ])
 
@@ -335,5 +336,5 @@ def update_output(start_date, end_date):
         return [start_date_object, end_date_object]
 
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8051)
+    app.run_server(debug=True, port=8051)
 
