@@ -136,111 +136,120 @@ else:
     logging.error('Nessuna tabella trovata')
     sys.exit()
 
-app.layout = html.Div([
-    
-    html.Div([
+app.layout = html.Div(
+    [
+    html.Div(
+        [
         
         #--- TITOLO PAGINA
-        html.Div([
-            html.H1(
-            children='Storico temperature (v2.0)',
-            style={
-                'margin-top': '20px',
-                'textAlign': 'center'}
-                ),
+        html.Div(
+            [
+                html.H1(
+                    children='Storico temperature (v2.0)',
+                    style={
+                        'margin-top': '20px',
+                        'textAlign': 'center'}
+                    ),
 
-            html.Hr()
-        ]),
+                html.Hr()
+            ]),
 
         #--- OPZIONI PAGINA
-        html.Div([
-            html.Div([
-                'Tabella:',
-                dcc.Dropdown(
-                    id='tab_name',
-                    options=[{'label': i, 'value': i} for i in dataDict],
-                    value=next(iter(dataDict)),
-                    clearable=False),
+        html.Div(
+            [
+            html.Div(
+                [
+                    'Tabella:',
+                    dcc.Dropdown(
+                        id='tab_name',
+                        options=[{'label': i, 'value': i} for i in dataDict],
+                        value=next(iter(dataDict)),
+                        clearable=False
+                        ),
 
-                dcc.Checklist(
-                        id='checklist-item',
-                        options=[{'label': 'Punti', 'value': 'mk'}])
-                    ],
-                    style={ 'width': '15%', 
-                            'display': 'inline-block',
-                            "margin-left": "50px",
-                            "margin-right": "50px"}
-                    ),
+                    dcc.Checklist(
+                            id='checklist-item',
+                            options=[{'label': 'Punti', 'value': 'mk'}]
+                            )
+                ],
+                style={ 'width': '15%', 
+                        'display': 'inline-block',
+                        "margin-left": "50px",
+                        "margin-right": "50px"}
+                ),
         
-            html.Div([
-                'Timeframe:',
-                dcc.Dropdown(
-                    id='tf_value',
-                    options=[
-                        {'label': 'Dati grezzi', 'value': 'None'},
-                        {'label': '30 minuti',  'value': '30T'},
-                        {'label': '1 ora',      'value': '1H'},
-                        {'label': '2 ore',      'value': '2H'},
-                        {'label': '4 ore',      'value': '4H'},
-                        {'label': '6 ore',      'value': '6H'},
-                        {'label': '12 ore',     'value': '12H'},
-                        {'label': '1 giorno',   'value': '1D'}],
-                    value='None',
-                    clearable=False)
-                    ],
-                    style={ 'width': '15%', 
-                            'display': 'inline-block',
-                            "margin-right": "50px",
-                            "verticalAlign": "top"}
-                    ),
+            html.Div(
+                [
+                    'Timeframe:',
+                    dcc.Dropdown(
+                        id='tf_value',
+                        options=[
+                            {'label': 'Dati grezzi', 'value': 'None'},
+                            {'label': '30 minuti',  'value': '30T'},
+                            {'label': '1 ora',      'value': '1H'},
+                            {'label': '2 ore',      'value': '2H'},
+                            {'label': '4 ore',      'value': '4H'},
+                            {'label': '6 ore',      'value': '6H'},
+                            {'label': '12 ore',     'value': '12H'},
+                            {'label': '1 giorno',   'value': '1D'}],
+                        value='None',
+                        clearable=False
+                        )
+                ],
+                style={ 'width': '15%', 
+                        'display': 'inline-block',
+                        "margin-right": "50px",
+                        "verticalAlign": "top"}
+                ),
 
             dcc.Store(id='output-container-date-picker-range'),
             
-            html.Div([
-                'Intervallo Date',
-                dcc.DatePickerRange(
-                    id='my-date-picker-range',
-                    #min_date_allowed=date(2021, 1, 1),
-                    clearable=True,
-                    #max_date_allowed=date.today(),
-                    #initial_visible_month=date(2021, 1, 1),
-                    #end_date=date.today(),
-                    display_format='DD-MM-YYYY',
-                    start_date_placeholder_text='DD-MM-YYYY')
-                    ],
-                    style={ 'width': '18%', 
-                            'display': 'inline-block',
-                            "verticalAlign": "top"}
-                    ),
+            html.Div(
+                [
+                    'Intervallo Date',
+                    dcc.DatePickerRange(
+                        id='my-date-picker-range',
+                        clearable=True,
+                        display_format='DD-MM-YYYY',
+                        start_date_placeholder_text='DD-MM-YYYY',
+                        number_of_months_shown=1,
+                        day_size=50,
+                        with_portal = True
+                        )
+                ],
+                style={ 'width': '18%', 
+                        'display': 'inline-block',
+                        "verticalAlign": "top"}
+                ),
 
             #--- INFO TABELLA
             html.Div(
                 [
                     html.H5("Info Tabella:"),
+
                     html.P(
                         id='test',
-                        className="row"
-                    ),
+                        className="row"),
+
                     html.P(
                         id='test2',
-                        className="row"
-                    )
+                        className="row")
                 ],
                 className="product",
                 style={ 'width': '30%',
                         'float': 'right', 
                         'display': 'inline-block',
                         "verticalAlign": "top"}
-                    )
+                )
             ],
-            style={ 
-                "margin-down": "20px"}
+            style={ "margin-down": "20px"}
             )
         ]),
 
-    html.Div([
-        #--- GRAFICO
-        dcc.Graph(id='indicator-graphic')
+    html.Div(
+        [
+            #--- GRAFICO
+            dcc.Graph(id='indicator-graphic')
         ],
         style={ 
             "margin-top": "20px",
@@ -291,21 +300,25 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         fig = px.bar(df) #, log_y=True)
 
     fig.update_layout(
-        #title=prova,
+        title=tab_name,
         xaxis_title="Time",
         yaxis_title="Value",
         legend_title="Sonde",
         font=dict(
-            #family="Courier New, monospace",
             size=16,
             color='black'
-            #color="RebeccaPurple"
             ))
 
-    return fig, time_start, time_end, time_start, time_end, \
-        'Intervallo tabella: dal ' + datetime.strptime(time_start, '%Y-%m-%d').strftime('%d/%m/%y') \
-        + ' al ' + datetime.strptime(time_end, '%Y-%m-%d').strftime('%d/%m/%y'), \
-        'Numero punti: ' + str(len(df))
+    return (
+        fig, 
+        time_start, 
+        time_end, 
+        time_start, 
+        time_end, 
+        'Intervallo tabella: dal '+datetime.strptime(time_start, '%Y-%m-%d').strftime('%d/%m/%y') \
+        +' al '+datetime.strptime(time_end, '%Y-%m-%d').strftime('%d/%m/%y'),
+        'Numero punti: '+str(len(df))
+        )
 
 @app.callback(
     dash.dependencies.Output('output-container-date-picker-range', 'data'),
