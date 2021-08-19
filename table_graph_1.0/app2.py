@@ -13,6 +13,13 @@ import time
 import sys
 import os
 
+import sys
+from PyQt5.QtCore import *
+from PyQt5.QtWebEngineWidgets import *
+from PyQt5.QtWidgets import QApplication
+from multiprocessing import Process, Queue
+
+
 logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
                     datefmt='%d-%m-%y %H:%M:%S',
                     filename = ".logfile.log",
@@ -90,6 +97,14 @@ def start_webpage():
     time.sleep(3)
     webbrowser.open('http://127.0.0.1:' + str(address) + '/', new=0)
 
+def start_window():
+    time.sleep(3)
+    app = QApplication(sys.argv)
+    web = QWebEngineView()
+    web.load(QUrl("http://127.0.0.1:8051"))
+    web.show()
+    sys.exit(app.exec ())
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=False)
 
@@ -128,9 +143,12 @@ else:
     logging.debug('File .csv creati in : ' + str(round(((time.process_time() - start)/60), 2)) + ' minuti')
 
 if dataDict != {}:
-    logging.debug('Tabelle caricate: ' + str(list(dataDict.keys())))
-    #t = threading.Thread(target=start_webpage)
-    #t.start()
+    #logging.debug('Tabelle caricate: ' + str(list(dataDict.keys())))
+    #p = Process(target=start_window)
+    #p.start()
+    # t = threading.Thread(target=start_window)
+    # t.start()
+    pass
 else:
     logging.error('Nessuna tabella trovata')
     sys.exit()
@@ -335,6 +353,18 @@ def update_output(start_date, end_date):
     else:
         return [start_date_object, end_date_object]
 
-if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+def start_dash():
+    app.run_server(debug=False, port=8051)
 
+if __name__ == '__main__':
+    t = threading.Thread(target=start_dash)
+    # set thread as Daemon
+    t.setDaemon(True) 
+    t.start()
+
+    time.sleep(3)
+    app = QApplication(sys.argv)
+    web = QWebEngineView()
+    web.load(QUrl("http://127.0.0.1:8051"))
+    web.show()
+    sys.exit(app.exec ())
