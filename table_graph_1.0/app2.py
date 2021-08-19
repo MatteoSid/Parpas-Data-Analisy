@@ -13,12 +13,12 @@ import time
 import sys
 import os
 
-import sys
 from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QApplication
-from multiprocessing import Process, Queue
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=False)
 
 logging.basicConfig(format='[%(levelname)s][%(asctime)s]: %(message)s',
                     datefmt='%d-%m-%y %H:%M:%S',
@@ -105,53 +105,45 @@ def start_window():
     web.show()
     sys.exit(app.exec ())
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=False)
+def start_dash():
+    app.run_server(debug=False, port=8051)
 
-#--- 1° PARTE: Creazione tabelle e caricamento dati
-# se la cartella csv è presente carico i dati in memoria
-path = os.getcwd() + '/table/'
-path_dest = path + 'csv/'
-dataDict = {}
-if os.path.isdir(path_dest):
-    for filename in os.listdir(path_dest):
-        df = pd.read_csv(path_dest + filename)
-        df['DataTime'] = pd.to_datetime(df['DataTime'], format='%Y-%m-%d %H:%M:%S')
-        df.set_index('DataTime', drop = True, inplace=True)
+def create_data():
+    path = os.getcwd() + '/table/'
+    path_dest = path + 'csv/'
+    dataDict = {}
+    if os.path.isdir(path_dest):
+        for filename in os.listdir(path_dest):
+            df = pd.read_csv(path_dest + filename)
+            df['DataTime'] = pd.to_datetime(df['DataTime'], format='%Y-%m-%d %H:%M:%S')
+            df.set_index('DataTime', drop = True, inplace=True)
 
-        dataDict[filename] = df
-else:
-    logging.debug('Creo i file csv')
-    print('\nTrasformo le tabelle per la visualizzazione, potrebbe richiedere qualche minuto...\n')
-    try:
-        os.mkdir(path_dest)
-    except:
-        print('Errore: non è stata trovata la cartella "table"')
-        logging.error('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
-                                                sys.exc_info()[1],
-                                                sys.exc_info()[2].tb_lineno))
-        sys.exit()
+            dataDict[filename] = df
+    else:
+        logging.debug('Creo i file csv')
+        print('\nTrasformo le tabelle per la visualizzazione, potrebbe richiedere qualche minuto...\n')
+        try:
+            os.mkdir(path_dest)
+        except:
+            print('Errore: non è stata trovata la cartella "table"')
+            logging.error('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+                                                    sys.exc_info()[1],
+                                                    sys.exc_info()[2].tb_lineno))
+            sys.exit()
+        
+        start = time.process_time()
+        for filename in os.listdir(path):
+            if (filename.endswith('.txt') or filename.endswith('.tab')): 
+                df = tab_to_df(path + filename)
+                if len(df) > 5:
+                    df.sort_index(inplace = True)
+                    dataDict[filename] = df
+                    df.to_csv(path_dest+filename, index=True)
+        logging.debug('File .csv creati in : ' + str(round(((time.process_time() - start)/60), 2)) + ' minuti')
     
-    start = time.process_time()
-    for filename in os.listdir(path):
-        if (filename.endswith('.txt') or filename.endswith('.tab')): 
-            df = tab_to_df(path + filename)
-            if len(df) > 5:
-                df.sort_index(inplace = True)
-                dataDict[filename] = df
-                df.to_csv(path_dest+filename, index=True)
-    logging.debug('File .csv creati in : ' + str(round(((time.process_time() - start)/60), 2)) + ' minuti')
+    return dataDict
 
-if dataDict != {}:
-    #logging.debug('Tabelle caricate: ' + str(list(dataDict.keys())))
-    #p = Process(target=start_window)
-    #p.start()
-    # t = threading.Thread(target=start_window)
-    # t.start()
-    pass
-else:
-    logging.error('Nessuna tabella trovata')
-    sys.exit()
+dataDict = create_data()
 
 app.layout = html.Div(
     [
@@ -305,7 +297,7 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         df = df.loc[data_range[0]:data_range[1]]
         logging.debug('Range date cambiato: ' + data_range[0] + '-' + data_range[1])
 
-    fig = px.line(df, height=800) #, width=1600, height=700)
+    fig = px.line(df, render_mode='webgl', height=750) #, width=1600, height=700)
 
     if checklist == None or checklist == []:
     #--- aggiungo i pallini per vedere quando sono state rilevate le temperature
@@ -353,18 +345,21 @@ def update_output(start_date, end_date):
     else:
         return [start_date_object, end_date_object]
 
-def start_dash():
-    app.run_server(debug=False, port=8051)
-
 if __name__ == '__main__':
-    t = threading.Thread(target=start_dash)
-    # set thread as Daemon
-    t.setDaemon(True) 
-    t.start()
 
-    time.sleep(3)
-    app = QApplication(sys.argv)
-    web = QWebEngineView()
-    web.load(QUrl("http://127.0.0.1:8051"))
-    web.show()
-    sys.exit(app.exec ())
+    if dataDict != {}:
+        t = threading.Thread(target=start_dash)
+        # set thread as Daemon
+        t.setDaemon(True) 
+        t.start()
+
+        time.sleep(3)
+
+        app = QApplication(sys.argv)
+        web = QWebEngineView()
+        web.load(QUrl("http://127.0.0.1:8051"))
+        web.show()
+        sys.exit(app.exec ())
+    else:
+        logging.error('Nessuna tabella trovata')
+        sys.exit()
