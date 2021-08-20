@@ -268,8 +268,8 @@ app.layout = html.Div(
                 id='indicator-graphic',
                 figure=dict(
                         layout={
-                            'plot_bgcolor': "#1A3E4C",
-                            'paper_bgcolor' :"#67AFCB"}
+                            'plot_bgcolor': "#082255",
+                            'paper_bgcolor' :"#007ACE"}
                         )
             )
         ],
