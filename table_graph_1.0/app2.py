@@ -1,8 +1,10 @@
 from dash.dependencies import Input, Output
 from datetime import date, datetime
+
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.express as px
+
 from tqdm import tqdm
 import pandas as pd
 import webbrowser
@@ -17,6 +19,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QApplication
 
+VERSION = '3.0'
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=False)
 
@@ -154,16 +157,17 @@ app.layout = html.Div(
         html.Div(
             [
                 html.H1(
-                    children='Storico temperature (v2.0)',
+                    children='Storico temperature ({})'.format(VERSION),
                     style={
                         'margin-top': '20px',
-                        'textAlign': 'center'}
+                        'textAlign': 'center',
+                        'verticalAlign': 'center'}
                     ),
 
                 html.Hr()
             ],
             className='title'
-            ),
+        ),
 
         #--- OPZIONI PAGINA
         html.Div(
@@ -189,7 +193,7 @@ app.layout = html.Div(
                         'display': 'inline-block',
                         "margin-left": "50px",
                         "margin-right": "50px"}
-                ),
+            ),
         
             html.Div(
                 [
@@ -214,7 +218,7 @@ app.layout = html.Div(
                         'display': 'inline-block',
                         "margin-right": "50px",
                         "verticalAlign": "top"}
-                ),
+            ),
 
             dcc.Store(id='output-container-date-picker-range'),
             
@@ -228,14 +232,14 @@ app.layout = html.Div(
                         start_date_placeholder_text='DD-MM-YYYY',
                         number_of_months_shown=1,
                         day_size=50,
-                        with_portal = True
-                        )
+                        #with_portal = True
+                    )
                 ],
                 className='product',
                 style={ 'width': '18%', 
                         'display': 'inline-block',
                         "verticalAlign": "top"}
-                ),
+            ),
 
             #--- INFO TABELLA
             html.Div(
@@ -244,28 +248,36 @@ app.layout = html.Div(
                     html.P(id='test'),
                     html.P(id='test2')
                 ],
-                className="product",
-                style={ 'width': '30%',
+                className="info_tab",
+                style={ 'width': '25%',
+                        'margin-right': '30px',
                         'float': 'right', 
                         'display': 'inline-block',
                         "verticalAlign": "top",
                         'orizontalAlign': 'center'}
-                )
+            )
             ],
             className='options'
-            )
-        ]),
+        )
+    ]),
 
     html.Div(
         [
             #--- GRAFICO
-            dcc.Graph(id='indicator-graphic')
+            dcc.Graph(
+                id='indicator-graphic',
+                figure=dict(
+                        layout={
+                            'plot_bgcolor': "#082255",
+                            'paper_bgcolor' :"#007ACE"}
+                        )
+            )
         ],
         style={ 
             "margin-top": "30px",
             "verticalAlign": "down"},
         className='graph'
-        )
+    )
 ])
 
 @app.callback(
@@ -318,7 +330,20 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         font=dict(
             size=16,
             color='black'
-            ))
+            ),
+        paper_bgcolor = "#67AFCB",
+        plot_bgcolor = "#1A3E4C",
+        legend = dict(
+            bgcolor = '#1A3E4C'
+        ),
+        legend_font=dict(
+            color='#67AFCB'
+        )
+        )
+    
+    fig.update_xaxes(showline=False, linewidth=1, linecolor='black', gridcolor='#67AFCB')
+    fig.update_yaxes(showline=False, linewidth=1, linecolor='black', gridcolor='#67AFCB')
+
 
     return (
         fig, 
