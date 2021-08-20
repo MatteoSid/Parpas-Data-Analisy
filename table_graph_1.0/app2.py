@@ -274,7 +274,7 @@ app.layout = html.Div(
             )
         ],
         style={ 
-            "margin-top": "30px",
+            "margin-top": "40px",
             "verticalAlign": "down"},
         className='graph'
     )
