@@ -10,10 +10,14 @@ body {
     font-weight: 900;
     color: #092834;
     font-family: DejaVu Sans Mono, monospace;
+    border-radius: 0.6rem;
+    /* border-color: black;
+    border-width: 5px; */
+    border: 1px solid #092834 !important;
 }
 
 .product {
-    background-color: #67AFCB;
+    background-color: transparent;
     border-radius: 0.65rem;
     color: #092834;
 }
@@ -22,12 +26,13 @@ body {
     border-width: 5px !important;
     border-color: black;
     background-color: #347B98;
-    border-radius: 0.3rem;
+    border-radius: 0.6rem;
     color: #092834;
     padding-top: 3px;
     padding-right: 3px;
     padding-bottom: 3px;
     padding-left: 3px;
+    border: 1px solid #092834 !important;
 }
 
 .first {
@@ -38,7 +43,6 @@ body {
     background-color: transparent;
     border-color: #67AFCB !important;
     border: 0px;
-
 }
 
 .DateRangePickerInput__showClearDates {
@@ -50,10 +54,15 @@ body {
     color: #092834 !important;
 } */
 
+/* menu a tendina */
 .Select-control, .Select-menu-outer {
     border: 1px solid #092834 !important;
     background-color: #347B98 !important;
-    color: #092834 !important;
+    color: #092834 !important; /* colore testo menu tendina*/
+}
+
+.Select-control {
+    border-radius: 0.6rem;
 }
 
 .DateInput {
@@ -71,10 +80,17 @@ input[type="email"], input[type="number"], input[type="search"], input[type="tex
     padding: 6px 10px;
     background-color: #347B98;
     border: 1px solid #092834;
-    border-radius: 4px;
+    border-radius: 0.6rem;
     box-shadow: none;
     box-sizing: border-box;
     font-family: inherit;
     font-size: inherit;
-    color: #092834
+    color: #092834;
+    font-weight: bold;
+}
+
+/* testo dei box*/
+.has-value.Select--single > .Select-control .Select-value .Select-value-label, .has-value.is-pseudo-focused.Select--single > .Select-control .Select-value .Select-value-label {
+    color: #092834;
+    font-weight: bold;
 }
