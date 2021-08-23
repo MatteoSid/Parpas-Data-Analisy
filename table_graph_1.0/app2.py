@@ -152,21 +152,26 @@ app.layout = html.Div(
     [
     html.Div(
         [
-        
         #--- TITOLO PAGINA
         html.Div(
             [
                 html.H1(
                     children='Storico temperature ({})'.format(VERSION),
                     style={
+                        #'height': '3%',
                         'margin-top': '20px',
                         'textAlign': 'center',
-                        'verticalAlign': 'center'}
-                    ),
+                        'verticalAlign': 'bottom',
+                        'margin-bottom': '10px'}
+                    )
 
-                html.Hr()
+                #html.Hr()
             ],
-            className='title'
+            className='title',
+            style={
+                'border-width': '10px',
+                'border-color': 'black'
+            }
         ),
 
         #--- OPZIONI PAGINA
@@ -181,12 +186,15 @@ app.layout = html.Div(
                         options=[{'label': i, 'value': i} for i in dataDict],
                         value=next(iter(dataDict)),
                         clearable=False
-                        ),
+                    ),
 
                     dcc.Checklist(
                             id='checklist-item',
-                            options=[{'label': 'Punti', 'value': 'mk'}]
-                            )
+                            options=[{
+                                'label': 'Punti',
+                                'value': 'mk'
+                            }]
+                    )
                 ],
                 className='product',
                 style={ 'width': '15%', 
@@ -211,7 +219,7 @@ app.layout = html.Div(
                             {'label': '1 giorno',   'value': '1D'}],
                         value='None',
                         clearable=False
-                        )
+                    )
                 ],
                 className='product',
                 style={ 'width': '15%', 
@@ -232,6 +240,7 @@ app.layout = html.Div(
                         start_date_placeholder_text='DD-MM-YYYY',
                         number_of_months_shown=1,
                         day_size=50,
+                        #end_date=date.today(),
                         #with_portal = True
                     )
                 ],
@@ -245,8 +254,8 @@ app.layout = html.Div(
             html.Div(
                 [
                     html.H5("Info Tabella:"),
-                    html.P(id='test'),
-                    html.P(id='test2')
+                    html.P(id='info-range'),
+                    html.P(id='info-points')
                 ],
                 className="info_tab",
                 style={ 'width': '25%',
@@ -257,7 +266,8 @@ app.layout = html.Div(
                         'orizontalAlign': 'center'}
             )
             ],
-            className='options'
+            className='options',
+            style={'margin-top': '20px'}
         )
     ]),
 
@@ -280,18 +290,19 @@ app.layout = html.Div(
     )
 ])
 
+
 @app.callback(
-    Output('indicator-graphic', 'figure'),
-    Output('my-date-picker-range', 'min_date_allowed'),
-    Output('my-date-picker-range', 'max_date_allowed'),
-    Output('my-date-picker-range', 'initial_visible_month'),
-    Output('my-date-picker-range', 'end_date'),
-    Output('test', 'children'),
-    Output('test2', 'children'),
-    Input('tab_name', 'value'),
-    Input('tf_value', 'value'),
-    Input('output-container-date-picker-range', 'data'),
-    Input('checklist-item', 'value'))
+    Output('indicator-graphic',     'figure'                ),
+    Output('my-date-picker-range',  'min_date_allowed'      ),
+    Output('my-date-picker-range',  'max_date_allowed'      ),
+    Output('my-date-picker-range',  'initial_visible_month' ),
+    Output('my-date-picker-range',  'end_date'              ),
+    Output('info-range',            'children'              ),
+    Output('info-points',           'children'              ),
+    Input('tab_name',               'value'                 ),
+    Input('tf_value',               'value'                 ),
+    Input('output-container-date-picker-range', 'data'      ),
+    Input('checklist-item',          'value'                ))
 def update_graph(tab_name, tf_value, data_range, checklist):
     logging.debug('Tabella selezionata: ' + tab_name)
 
