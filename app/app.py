@@ -297,7 +297,8 @@ app.layout = html.Div(
                 # --- GRAFICO
                 dcc.Graph(
                     id='indicator-graphic',
-                    responsive=True,
+                    #responsive=True,
+                    config={"displayModeBar": True},
                     figure=dict(
                         layout={
                             'plot_bgcolor': "#1A3E4C",
@@ -342,7 +343,7 @@ def update_graph(tab_name, tf_value, data_range, checklist):
         df = df.loc[data_range[0]:data_range[1]]
         logging.debug('Range date cambiato: ' + data_range[0] + '-' + data_range[1])
 
-    fig = px.line(df, render_mode='webgl', height=700)  # , width=1600, height=700)
+    fig = px.line(df, render_mode='webgl', height=670)  # , width=1600, height=700)
 
     if checklist is None or checklist == []:
         # --- aggiungo i pallini per vedere quando sono state rilevate le temperature

@@ -1,19 +1,21 @@
 body {
-    font-family: DejaVu Sans Mono, monospace;
+    /*font-family: DejaVu Sans Mono, monospace;
     /* font-family: "Open Sans", sans-serif; */
     background-color: #67AFCB;
     line-height: 1em;
+    font-family: helvetica;
 }
 
 .title {
     background-color: #347B98;
     font-weight: 900;
     color: #092834;
-    font-family: DejaVu Sans Mono, monospace;
+    /*font-family: DejaVu Sans Mono, monospace;*/
     border-radius: 0.6rem;
     /* border-color: black;
     border-width: 5px; */
     border: 1px solid #092834 !important;
+    font-family: helvetica
 }
 
 .product {
