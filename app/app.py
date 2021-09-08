@@ -407,18 +407,24 @@ def update_output(start_date, end_date):
 
 if __name__ == '__main__':
 
-    if dataDict != {}:
-        t = threading.Thread(target=start_dash)
-        # set thread as Daemon così viene ucciso se il thread principale termina
-        t.setDaemon(True)
-        t.start()
+    try:
+        if dataDict != {}:
+            t = threading.Thread(target=start_dash)
+            # set thread as Daemon così viene ucciso se il thread principale termina
+            t.setDaemon(True)
+            t.start()
 
-        time.sleep(3)
+            time.sleep(3)
 
-        app = QApplication(sys.argv)
-        window = MainWindow()
+            app = QApplication(sys.argv)
+            window = MainWindow()
 
-        sys.exit(app.exec())
-    else:
-        logging.error('Nessuna tabella trovata')
-        sys.exit()
+            sys.exit(app.exec())
+        else:
+            logging.error('Nessuna tabella trovata')
+            sys.exit()
+    except:
+        logging.info('Error: {}. {}, line: {}'.format(sys.exc_info()[0],
+                                                      sys.exc_info()[1],
+                                                      sys.exc_info()[2].tb_lineno))
+

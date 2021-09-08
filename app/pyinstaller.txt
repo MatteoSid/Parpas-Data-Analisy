@@ -1,0 +1,4 @@
+pyinstaller --noconfirm --onefile --windowed 
+--add-data "C:/Users/Parpas Matteo Donato/Documents/GitHub/Parpas-Data-Analisy/app/venv-app/Lib/site-packages/dash;dash/" 
+--add-data "C:/Users/Parpas Matteo Donato/Documents/GitHub/Parpas-Data-Analisy/app/assets;assets/"  
+"C:/Users/Parpas Matteo Donato/Documents/GitHub/Parpas-Data-Analisy/app/app.py"
